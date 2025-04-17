@@ -5,6 +5,7 @@ const path = require('path');
 const bcryptjs = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -20,8 +21,49 @@ const signupHTML = fs.readFileSync(
   }
 );
 
-const JWTStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
+var JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+var opts = {};
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = 'cat';
+var cookieExtractor = function (req) {
+  var token = null;
+  if (req && req.cookies) {
+    token = req.cookies['jwt'];
+  }
+  return token;
+};
+// ...
+opts.jwtFromRequest = cookieExtractor;
+passport.use(
+  new JwtStrategy(opts, async (jwt_payload, done) => {
+    try {
+      const res = await pool.query('SELECT * FROM users WHERE id = $1', [
+        jwt_payload.id,
+      ]);
+      console.log('injwt strategy', res.rows[0]);
+
+      if (res.rows.length > 0) {
+        return done(null, res.rows[0]);
+      } else {
+        return done(null, false);
+      }
+    } catch (err) {
+      return done(err, false);
+    }
+  })
+);
+
+app.get(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  function (req, res) {
+    console.log('req.user', req.user);
+
+    res.send('profile');
+  }
+);
 
 const { Pool } = require('pg');
 const { promisify } = require('util');
