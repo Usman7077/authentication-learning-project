@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passport-JWT</title>
+  </head>
+  <body>
+    <div style="background-color: antiquewhite">
+      <a href="/">Home</a>
+      <h1>Sign Up Form</h1>
+      <form action="/signup" method="post">
+        <div>
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" /><br /><br />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" /><br /><br />
+        </div>
+        <button>Register</button>
+      </form>
+
+      <form>
+        <input type="text" id="username" name="username" disabled value="" />
+
+        <input type="time" id="date" name="date" value="" disabled />
+        <label for="post">Type your post</label>
+        <textarea
+          placeholder="Type you post here..."
+          id="post"
+          name="post"
+          rows="4"
+          cols="50"
+        ></textarea>
+      </form>
+
+      <div style="display: grid; grid-column: 3fr 1fr 1fr">
+        <span>${post.content}</span>
+        <span>${post.createdby}</span>
+        <span>${post.createdon}</span>
+      </div>
+    </div>
+  </body>
+</html>
